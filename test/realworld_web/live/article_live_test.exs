@@ -3,6 +3,7 @@ defmodule RealworldWeb.ArticleLiveTest do
 
   import Phoenix.LiveViewTest
   import Realworld.BlogsFixtures
+  import Realworld.AccountsFixtures
 
   @create_attrs %{title: "some title", body: "some body"}
   @update_attrs %{title: "some updated title", body: "some updated body"}
@@ -24,7 +25,10 @@ defmodule RealworldWeb.ArticleLiveTest do
     end
 
     test "saves new article", %{conn: conn} do
-      {:ok, index_live, _html} = live(conn, ~p"/articles")
+      {:ok, index_live, _html} =
+        conn
+        |> log_in_user(user_fixture())
+        |> live(~p"/articles")
 
       assert index_live |> element("a", "New Article") |> render_click() =~
                "New Article"
