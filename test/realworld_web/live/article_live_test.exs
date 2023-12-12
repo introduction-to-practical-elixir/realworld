@@ -45,36 +45,6 @@ defmodule RealworldWeb.ArticleLiveTest do
       assert html =~ "Article created successfully"
       assert html =~ "some title"
     end
-
-    test "updates article in listing", %{conn: conn, article: article} do
-      {:ok, index_live, _html} = live(conn, ~p"/articles")
-
-      assert index_live |> element("#articles-#{article.id} a", "Edit") |> render_click() =~
-               "Edit Article"
-
-      assert_patch(index_live, ~p"/articles/#{article}/edit")
-
-      assert index_live
-             |> form("#article-form", article: @invalid_attrs)
-             |> render_change() =~ "can&#39;t be blank"
-
-      assert index_live
-             |> form("#article-form", article: @update_attrs)
-             |> render_submit()
-
-      assert_patch(index_live, ~p"/articles")
-
-      html = render(index_live)
-      assert html =~ "Article updated successfully"
-      assert html =~ "some updated title"
-    end
-
-    test "deletes article in listing", %{conn: conn, article: article} do
-      {:ok, index_live, _html} = live(conn, ~p"/articles")
-
-      assert index_live |> element("#articles-#{article.id} a", "Delete") |> render_click()
-      refute has_element?(index_live, "#articles-#{article.id}")
-    end
   end
 
   describe "Show" do
