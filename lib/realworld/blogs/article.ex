@@ -5,6 +5,7 @@ defmodule Realworld.Blogs.Article do
   alias Realworld.Blogs.Comment
   alias Realworld.Blogs.Tag
   alias Realworld.Blogs.ArticleTag
+  alias Realworld.Accounts.User
 
   schema "articles" do
     field :title, :string
@@ -14,6 +15,7 @@ defmodule Realworld.Blogs.Article do
       join_through: ArticleTag,
       on_replace: :delete,
       on_delete: :delete_all
+    belongs_to :author, User
 
     timestamps(type: :utc_datetime)
   end
@@ -21,8 +23,8 @@ defmodule Realworld.Blogs.Article do
   @doc false
   def changeset(article, attrs, tags \\ []) do
     article
-    |> cast(attrs, [:title, :body])
-    |> validate_required([:title, :body])
+    |> cast(attrs, [:title, :body, :author_id])
+    |> validate_required([:title, :body, :author_id])
     |> put_assoc(:tags, tags)
   end
 end

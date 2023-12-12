@@ -7,6 +7,7 @@ defmodule Realworld.BlogsTest do
     alias Realworld.Blogs.Article
 
     import Realworld.BlogsFixtures
+    import Realworld.AccountsFixtures
 
     @invalid_attrs %{title: nil, body: nil}
 
@@ -18,10 +19,18 @@ defmodule Realworld.BlogsTest do
     test "list_articles_by_tag/1" do
       {:ok, %{article: a1}} =
         Blogs.insert_article_with_tags(%{
-          title: "t", body: "b", tags_string: "Elixir, Phoenix, Nerves, Nx"})
+          title: "t",
+          body: "b",
+          tags_string: "Elixir, Phoenix, Nerves, Nx",
+          author_id: user_fixture().id
+        })
       {:ok, %{article: a2}} =
         Blogs.insert_article_with_tags(%{
-          title: "t", body: "b", tags_string: "Elixir"})
+          title: "t",
+          body: "b",
+          tags_string: "Elixir",
+          author_id: user_fixture().id
+        })
 
       # 「Elixir」タグを持つ記事を検索
       assert Blogs.list_articles_by_tag("Elixir")
@@ -40,7 +49,7 @@ defmodule Realworld.BlogsTest do
     end
 
     test "create_article/1 with valid data creates a article" do
-      valid_attrs = %{title: "some title", body: "some body"}
+      valid_attrs = %{title: "some title", body: "some body", author_id: user_fixture().id}
 
       assert {:ok, %Article{} = article} = Blogs.create_article(valid_attrs)
       assert article.title == "some title"
@@ -82,6 +91,7 @@ defmodule Realworld.BlogsTest do
     alias Realworld.Blogs.Comment
 
     import Realworld.BlogsFixtures
+    import Realworld.AccountsFixtures
 
     @invalid_attrs %{body: nil}
 
@@ -96,7 +106,7 @@ defmodule Realworld.BlogsTest do
     end
 
     test "create_comment/1 with valid data creates a comment" do
-      valid_attrs = %{body: "some body", article_id: article_fixture().id}
+      valid_attrs = %{body: "some body", article_id: article_fixture().id, author_id: user_fixture().id}
 
       assert {:ok, %Comment{} = comment} = Blogs.create_comment(valid_attrs)
       assert comment.body == "some body"
