@@ -4,6 +4,7 @@ defmodule Realworld.BlogsTest do
   alias Realworld.Blogs
 
   describe "articles" do
+    alias Realworld.Repo
     alias Realworld.Blogs.Article
 
     import Realworld.BlogsFixtures
@@ -44,7 +45,7 @@ defmodule Realworld.BlogsTest do
     end
 
     test "get_article!/1 returns the article with given id" do
-      article = article_fixture()
+      article = article_fixture() |> Repo.preload(:comments)
       assert Blogs.get_article!(article.id) == article
     end
 
@@ -70,7 +71,7 @@ defmodule Realworld.BlogsTest do
     end
 
     test "update_article/2 with invalid data returns error changeset" do
-      article = article_fixture()
+      article = article_fixture() |> Repo.preload(:comments)
       assert {:error, %Ecto.Changeset{}} = Blogs.update_article(article, @invalid_attrs)
       assert article == Blogs.get_article!(article.id)
     end

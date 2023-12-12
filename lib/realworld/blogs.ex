@@ -42,7 +42,7 @@ defmodule Realworld.Blogs do
 
   """
   def get_article!(id) do
-    Repo.get!(Article, id) |> Repo.preload(:tags)
+    Repo.get!(Article, id) |> Repo.preload([:tags, comments: :author])
   end
 
   def insert_article_with_tags(attrs) do
