@@ -86,5 +86,19 @@ defmodule RealworldWeb.ArticleLiveTest do
       assert html =~ "Article updated successfully"
       assert html =~ "some updated title"
     end
+
+    test "deletes article", %{conn: conn, article: article} do
+      {:ok, show_live, _html} =
+        conn
+        |> log_in_user(Realworld.Repo.preload(article, :author).author)
+        |> live(~p"/articles/#{article}")
+
+      assert show_live |> element("a", "Delete") |> render_click()
+      assert_redirect(show_live, ~p"/articles")
+
+      {:ok, _index_live, html} = live(conn, ~p"/articles")
+
+      refute html =~ "/articles/#{article.id}"
+    end
   end
 end
